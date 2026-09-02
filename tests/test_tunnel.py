@@ -25,3 +25,8 @@ def test_cloudflared_windows_arm64_download_url():
 def test_cloudflared_download_rejects_non_windows_v1():
     with pytest.raises(RuntimeError):
         cloudflared_download_url('Linux', 'x86_64')
+
+
+def test_extract_tunnel_url_ignores_quick_tunnel_api_endpoint():
+    line = '2026-09-02 INF Requesting new quick Tunnel on https://api.trycloudflare.com'
+    assert extract_tunnel_url(line) is None

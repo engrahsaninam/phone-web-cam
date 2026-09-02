@@ -7,13 +7,19 @@ import tempfile
 import urllib.request
 from pathlib import Path
 
-_TUNNEL_URL_RE = re.compile(r"https://[a-z0-9-]+\.trycloudflare\.com", re.IGNORECASE)
+_TUNNEL_URL_RE = re.compile(r"https://([a-z0-9-]+)\.trycloudflare\.com", re.IGNORECASE)
 _RELEASE_BASE = "https://github.com/cloudflare/cloudflared/releases/latest/download"
 
 
 def extract_tunnel_url(line: str) -> str | None:
     match = _TUNNEL_URL_RE.search(line)
-    return match.group(0) if match else None
+    if not match:
+        return None
+    # cloudflared logs the Quick Tunnel API endpoint before the actual
+    # randomly-generated public hostname. Never treat that API URL as usable.
+    if match.group(1).lower() == "api":
+        return None
+    return match.group(0)
 
 
 def cloudflared_download_url(system: str | None = None, machine: str | None = None) -> str:
