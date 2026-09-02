@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>Phone Web Cam</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="brand">Phone Web Cam</div>
+      <h1>Use this phone as your PC camera</h1>
+      <p>Your camera streams live to your PC. This page does not record or save footage.</p>
+    </section>
+
+    <section class="preview-card">
+      <div class="video-wrap">
+        <video id="preview" autoplay muted playsinline></video>
+        <div id="placeholder" class="placeholder">Camera preview</div>
+        <div id="liveBadge" class="live-badge hidden">LIVE</div>
+      </div>
+
+      <div id="status" class="status" role="status" aria-live="polite">Ready to connect</div>
+
+      <div class="controls">
+        <label>
+          <span>Quality</span>
+          <select id="resolution">
+            <option value="480p">480p — lower bandwidth</option>
+            <option value="720p" selected>720p — recommended</option>
+            <option value="1080p">1080p — best quality</option>
+          </select>
+        </label>
+
+        <div class="button-row">
+          <button id="startBtn" class="primary" type="button">Start Camera</button>
+          <button id="switchBtn" type="button" disabled>Switch Camera</button>
+          <button id="stopBtn" type="button" disabled>Stop</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="help">
+      <h2>On your PC</h2>
+      <p>After this page says connected, select <strong>OBS Virtual Camera</strong> in Zoom, Teams, Meet, Discord, or another camera app.</p>
+      <p id="virtualCamStatus" class="muted">Virtual camera status will appear after streaming starts.</p>
+    </section>
+  </main>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
