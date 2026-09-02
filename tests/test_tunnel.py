@@ -47,3 +47,16 @@ def test_cloudflared_curl_command_has_progress_timeout_and_retries(tmp_path: Pat
     assert "--retry" in command
     assert "--location" in command
     assert str(target) in command
+
+
+def test_cloudflared_curl_command_allows_slow_download_and_resumes(tmp_path: Path):
+    target = tmp_path / "cloudflared.exe"
+    command = build_curl_download_command("https://example.com/cloudflared.exe", target)
+
+    max_time_index = command.index("--max-time")
+    connect_timeout_index = command.index("--connect-timeout")
+    continue_index = command.index("--continue-at")
+
+    assert command[max_time_index + 1] == "600"
+    assert command[connect_timeout_index + 1] == "30"
+    assert command[continue_index + 1] == "-"
