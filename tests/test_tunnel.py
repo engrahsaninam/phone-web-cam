@@ -1,4 +1,12 @@
-from phonecam.tunnel import extract_tunnel_url
+from pathlib import Path
+
+import pytest
+
+from phonecam.tunnel import (
+    build_curl_download_command,
+    cloudflared_download_url,
+    extract_tunnel_url,
+)
 
 
 def test_extract_tunnel_url_from_cloudflared_output():
@@ -8,10 +16,6 @@ def test_extract_tunnel_url_from_cloudflared_output():
 
 def test_extract_tunnel_url_ignores_unrelated_lines():
     assert extract_tunnel_url('2026-09-02 INF Starting metrics server') is None
-
-import pytest
-
-from phonecam.tunnel import cloudflared_download_url
 
 
 def test_cloudflared_windows_amd64_download_url():
@@ -30,3 +34,16 @@ def test_cloudflared_download_rejects_non_windows_v1():
 def test_extract_tunnel_url_ignores_quick_tunnel_api_endpoint():
     line = '2026-09-02 INF Requesting new quick Tunnel on https://api.trycloudflare.com'
     assert extract_tunnel_url(line) is None
+
+
+def test_cloudflared_curl_command_has_progress_timeout_and_retries(tmp_path: Path):
+    target = tmp_path / "cloudflared.exe"
+    command = build_curl_download_command("https://example.com/cloudflared.exe", target)
+
+    assert command[0] == "curl.exe"
+    assert "--progress-bar" in command
+    assert "--connect-timeout" in command
+    assert "--max-time" in command
+    assert "--retry" in command
+    assert "--location" in command
+    assert str(target) in command
