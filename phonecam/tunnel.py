@@ -49,13 +49,15 @@ def build_curl_download_command(
         "--fail",
         "--progress-bar",
         "--connect-timeout",
-        "15",
+        "30",
         "--max-time",
-        "180",
+        "600",
         "--retry",
         "2",
         "--retry-delay",
         "2",
+        "--continue-at",
+        "-",
         "--output",
         str(target),
         url,
@@ -90,7 +92,7 @@ def _download_cloudflared(url: str, target: Path) -> None:
     curl = shutil.which("curl.exe") or shutil.which("curl")
     if curl:
         print("Downloading Cloudflare Tunnel helper (first run only)...")
-        print("You should see download progress below. This is normally about a minute or less.")
+        print("Slow connections are supported: up to 10 minutes per attempt, with resume on retry.")
         result = subprocess.run(build_curl_download_command(url, target, curl), check=False)
         if result.returncode != 0:
             raise RuntimeError(
